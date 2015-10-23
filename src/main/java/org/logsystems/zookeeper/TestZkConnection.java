@@ -16,7 +16,7 @@ public class TestZkConnection {
     private static List<String> znodeList=new ArrayList<String>();
     public static void main(String[] args) throws IOException,InterruptedException,KeeperException{
         zkc=new ZkConnector();
-        zk=zkc.connect("localhost");
+        zk=zkc.connect("10.0.2.6");
         znodeList=zk.getChildren("/", true);
         for (String znode:znodeList){
             System.out.println(znode);

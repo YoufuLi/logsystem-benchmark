@@ -20,7 +20,7 @@ public class CreateZNode {
         String path="/sampleznode";
         byte[] data="sample znode data".getBytes();
         zkc=new ZkConnector();
-        zk=zkc.connect("localhost");
+        zk=zkc.connect("10.0.2.6");
         create(path,data);
     }
 }

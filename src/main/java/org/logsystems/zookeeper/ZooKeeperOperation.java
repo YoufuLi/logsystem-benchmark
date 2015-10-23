@@ -20,11 +20,11 @@ public class ZooKeeperOperation{
 
     public static void main(String arg[]) throws IOException, InterruptedException, KeeperException {
         long startT = System.currentTimeMillis();
-        int worksize=10000;
+        int worksize=100000;
         String path="/sampleznode/childnode";
         String tempPath="";
         zkc=new ZkConnector();
-        zk=zkc.connect("localhost");
+        zk=zkc.connect("10.0.2.6");
         for(int i=0;i<worksize;i++){
             tempPath=path+i;
             byte[] data="i".getBytes();

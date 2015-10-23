@@ -20,12 +20,12 @@ public class DeleteZNode {
     public static void main(String[] args) throws IOException, InterruptedException, KeeperException{
         String path="/sampleznode/";
         zkc=new ZkConnector();
-        zk=zkc.connect("localhost");
+        zk=zkc.connect("10.0.2.6");
         //znodeList=zk.getChildren("/sampleznode", true);
 //        for (String znode:znodeList){
 //            delete(path+znode);
 //        }
-        for(int i=0;i<10000;i++){
+        for(int i=0;i<1000000;i++){
             delete(path+"childnode"+i);
         }
     }

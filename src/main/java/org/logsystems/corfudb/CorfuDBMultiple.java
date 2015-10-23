@@ -45,7 +45,7 @@ public class CorfuDBMultiple{
                 addLoggingUnit(7004, 0, NettyLogUnitServer.class, "nlu", luConfigMap).
                 addSequencer(7001, NettyStreamingSequencerServer.class, "nsss", null).
                 //              setReplication("cdbqr").
-                        start(9999) ;
+                start(9999) ;
 
         cdr = CorfuDBRuntime.getRuntime("http://localhost:9999/corfu");
 
