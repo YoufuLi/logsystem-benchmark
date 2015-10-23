@@ -85,7 +85,6 @@ public class CorfuDBMultiple{
 //            }
 //        }
 
-
     }
 
     public static void main(String args[]) throws InterruptedException, IOException {
