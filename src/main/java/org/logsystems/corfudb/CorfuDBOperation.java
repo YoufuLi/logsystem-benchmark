@@ -1,13 +1,10 @@
 package org.logsystems.corfudb;
 
-import org.corfudb.infrastructure.NettyLogUnitServer;
-import org.corfudb.infrastructure.NettyStreamingSequencerServer;
 import org.corfudb.runtime.CorfuDBRuntime;
 
 import org.corfudb.runtime.stream.*;
 import org.corfudb.runtime.view.*;
 import org.corfudb.util.CorfuDBFactory;
-import org.corfudb.util.CorfuInfrastructureBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,13 +16,13 @@ import java.util.UUID;
 /**
  * Created by youfuli on 10/9/15.
  */
-public class CorfuDBMultiple{
-    private Logger log = LoggerFactory.getLogger(CorfuDBMultiple.class);
+public class CorfuDBOperation {
+    private Logger log = LoggerFactory.getLogger(CorfuDBOperation.class);
     Map<String,Object> opts=new HashMap<String, Object>();
     CorfuDBFactory cdbFactory;
     CorfuDBRuntime cdr;
     ICorfuDBInstance cinstance;
-    public CorfuDBMultiple(String master,String serviceURL){
+    public CorfuDBOperation(String master, String serviceURL){
         opts.put(master,serviceURL);
         cdbFactory=new CorfuDBFactory(opts);
         cdr=cdbFactory.getRuntime();
@@ -70,7 +67,7 @@ public class CorfuDBMultiple{
 
     public static void main(String args[]) throws InterruptedException, IOException {
         System.out.println("creating test thread...");
-        CorfuDBMultiple cfmultiple=new CorfuDBMultiple("--master","http://localhost:8000/corfu");
+        CorfuDBOperation cfmultiple=new CorfuDBOperation("--master","http://localhost:8000/corfu");
         long startT = System.currentTimeMillis();
         UUID streamID=UUID.randomUUID();
         cfmultiple.appendData(streamID,cfmultiple.cinstance);
