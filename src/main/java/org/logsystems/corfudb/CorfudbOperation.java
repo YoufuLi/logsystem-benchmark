@@ -31,14 +31,16 @@ public class CorfudbOperation {
         IWriteOnceAddressSpace cfwoas=cinstance.getAddressSpace();
         cflog=new SimpleLog(cfsequencer,cfwoas);
     }
-    public ITimestamp append2CorfuDB() throws ClassNotFoundException {
+    public ITimestamp append2CorfuDB(Map<String,String> cfmap) throws ClassNotFoundException {
 
         ITimestamp cftimestamp=new SimpleTimestamp(0);
 
         try {
             report("Begin:"+System.currentTimeMillis());
-            //cflog.append((Serializable) cfmap);
-            cflog.append("i");
+            cflog.append((Serializable) cfmap);
+//            for (int i=0;i<1000000;i++){
+//                cflog.append((Serializable) cfmap);
+//            }
             report("End:" + System.currentTimeMillis());
 
         } catch (OutOfSpaceException e) {
@@ -65,11 +67,11 @@ public class CorfudbOperation {
     public static void main(String args[]){
         CorfudbOperation cfoperation=new CorfudbOperation("--master","http://localhost:8000/corfu");
         ITimestamp cftimestamp = null;
-//        Map<String,String> cfmap=new HashMap<>();
-//        cfmap.put("No1","Hello CorfuDB");
-//        cfmap.put("No2","Hello Youfu");
+        Map<String,String> cfmap=new HashMap<>();
+        cfmap.put("No1","Hello CorfuDB");
+        cfmap.put("No2","Hello Youfu");
         try {
-            cftimestamp=cfoperation.append2CorfuDB();
+            cftimestamp=cfoperation.append2CorfuDB(cfmap);
 
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
@@ -79,4 +81,29 @@ public class CorfudbOperation {
     public void report(Object message){
         System.out.println(message.toString());
     }
+//    public static void main(String args[]) throws ClassNotFoundException {
+//        Map<String,Object> opts=new HashMap<String, Object>();
+//        opts.put("--master","http://localhost:8000/corfu");
+//        CorfuDBFactory cdbFactory = new CorfuDBFactory(opts);
+//        CorfuDBRuntime cdr=cdbFactory.getRuntime();
+//        ICorfuDBInstance cinstance=cdr.getLocalInstance();
+//        cinstance.getConfigurationMaster().resetAll();
+//        ISequencer cfsequencer=cinstance.getSequencer();
+//        IWriteOnceAddressSpace cfwoas=cinstance.getAddressSpace();
+//        ILog cflog=new SimpleLog(cfsequencer,cfwoas);
+//        ITimestamp cftimestamp=new SimpleTimestamp(0);
+//
+//        Map<String,String> cfmap=new HashMap<>();
+//        try {
+//            cfmap.put("No1","Hello CorfuDB");
+//            cftimestamp=cflog.append((Serializable) cfmap);
+//            System.out.println(cflog.read(cftimestamp).toString());
+//        } catch (OutOfSpaceException e) {
+//            e.printStackTrace();
+//        }catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//
+//    }
+
 }
