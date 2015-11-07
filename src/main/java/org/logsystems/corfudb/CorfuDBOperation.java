@@ -4,6 +4,9 @@ import org.corfudb.infrastructure.NettyLogUnitServer;
 import org.corfudb.infrastructure.NettyStreamingSequencerServer;
 import org.corfudb.runtime.CorfuDBRuntime;
 
+import org.corfudb.runtime.collections.CDBSimpleMap;
+import org.corfudb.runtime.exceptions.HoleEncounteredException;
+import org.corfudb.runtime.protocols.sequencers.IStreamSequencer;
 import org.corfudb.runtime.stream.*;
 import org.corfudb.runtime.view.*;
 import org.corfudb.util.CorfuDBFactory;
@@ -12,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -25,6 +29,7 @@ public class CorfuDBOperation {
     CorfuDBFactory cdbFactory;
     CorfuDBRuntime cdr;
     ICorfuDBInstance cinstance;
+    CorfuInfrastructureBuilder cbuilder;
     public CorfuDBOperation(String master, String serviceURL){
 //        opts.put(master,serviceURL);
 //        cdbFactory=new CorfuDBFactory(opts);
@@ -39,7 +44,7 @@ public class CorfuDBOperation {
                 put("trim", 0);
             }
         };
-        CorfuInfrastructureBuilder cbuilder = new CorfuInfrastructureBuilder().
+        cbuilder = new CorfuInfrastructureBuilder().
                 addLoggingUnit(7002, 0, NettyLogUnitServer.class, "nlu", luConfigMap).
                 addLoggingUnit(7003, 0, NettyLogUnitServer.class, "nlu", luConfigMap).
                 addLoggingUnit(7004, 0, NettyLogUnitServer.class, "nlu", luConfigMap).
@@ -50,21 +55,31 @@ public class CorfuDBOperation {
 
         cinstance = cdr.getLocalInstance();
         cinstance.getConfigurationMaster().resetAll();
+
     }
 
     public void appendData(UUID streamID, ICorfuDBInstance instance) throws IOException {
-        instance.getNewStreamingSequencer();
-        IStream iStream = instance.openStream(streamID);
+        IStream iStream = cinstance.openStream(streamID);
+
+        //INewStreamingSequencer ns_sequencer= cinstance.getNewStreamingSequencer();
+        //IStreamAddressSpace sas= cinstance.getStreamAddressSpace();
+        //SimpleLog simpleLog=new SimpleLog(sequencer,woas);
         //NewStream newStream=new NewStream(streamID,cinstance);
-        int worksize = 1;
+        int worksize = 10;
+        //CDBSimpleMap simpleMap=new CDBSimpleMap();
+        //simpleMap.put(1,"i");
 
         for (int j = 0; j < worksize; j++) {
-            iStream.append("i".getBytes());
+            ITimestamp iTimestamp=iStream.append("i".getBytes());
+            try {
+                System.out.println(iStream.readEntry(iTimestamp).getPayload());
+            } catch (HoleEncounteredException e) {
+                e.printStackTrace();
+            }
             //newStream.append(j);
-
+            //simpleLog.append(j);
         }
-
-
+        cbuilder.shutdownAndWait();
     }
 
     public static void main(String args[]) throws InterruptedException, IOException {
